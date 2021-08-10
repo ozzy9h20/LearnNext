@@ -6,6 +6,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import Layout from "@/components/Layout";
 import Modal from "@/components/Modal";
+import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -57,6 +58,14 @@ export default function AddEventPage({ evt }) {
     const { name, value } = e.target;
     setValues({...values, [name]: value});
   };
+
+  const imageUploaded = async (e) => {
+    const res = await fetch(`${API_URL}/events/${evt.id}`);
+    const data = await res.json();
+
+    setImagePreview(data.image.formats.thumbnail.url);
+    setShowModal(false);
+  }
   
   return (
     <Layout title='Add New Event'>
@@ -161,7 +170,7 @@ export default function AddEventPage({ evt }) {
         show={showModal} 
         onClose={() => setShowModal(false)}
       >
-
+        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
       </Modal>
     </Layout>
   )
